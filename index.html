@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative Landing Page</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+
+        .threejs-section {
+            background-color: #0a0a0a;
+            padding: 150px 0;
+        }
+
+        #three-container {
+            width: 100%;
+            height: 500px;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        html, body {
+            overflow-x: hidden;
+            background-color: #0f0f0f;
+            color: #ffffff;
+        }
+
+        body {
+            position: relative;
+        }
+
+        .smooth-scroll {
+            position: relative;
+        }
+
+        section {
+            padding: 100px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        h1 {
+            font-size: 5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 30px;
+            color: #ffffff;
+            opacity: 0;
+        }
+
+        h2 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: #ffffff;
+        }
+
+        p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            opacity: 0.8;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            background: linear-gradient(90deg, #ff6b6b, #ff8e53);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            opacity: 0;
+        }
+
+        button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 0;
+            z-index: 100;
+            transition: all 0.3s ease;
+            background-color: rgba(15, 15, 15, 0);
+        }
+
+        nav.scrolled {
+            background-color: rgba(15, 15, 15, 0.9);
+            padding: 15px 0;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: #ff6b6b;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #ff6b6b;
+        }
+
+        /* Custom Cursor */
+        .cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #ff6b6b;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, background-color 0.3s;
+            mix-blend-mode: difference;
+        }
+
+        .cursor-follower {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            border: 2px solid rgba(255, 107, 107, 0.5);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: all 0.1s ease;
+            mix-blend-mode: difference;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-shapes {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.2;
+        }
+
+        .shape-1 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+            top: 20%;
+            right: 10%;
+        }
+
+        .shape-2 {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            bottom: 15%;
+            right: 20%;
+        }
+
+        .shape-3 {
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            top: 40%;
+            left: 10%;
+        }
+
+        /* Features Section */
+        .features {
+            background-color: #131313;
+            padding: 150px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 80px;
+            opacity: 0;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+        }
+
+        .feature-card {
+            background-color: #1a1a1a;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            opacity: 0;
+            transform: translateY(50px);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            border-radius: 50%;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #ffffff;
+        }
+
+        .feature-desc {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Product Showcase */
+        .product-showcase {
+            padding: 150px 0;
+            position: relative;
+        }
+
+        .showcase-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 500px;
+            background: url('/api/placeholder/800/500') center/cover;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            margin-top: 50px;
+            transform: translateY(50px);
+            opacity: 0;
+        }
+
+        .product-details {
+            margin-top: 50px;
+            transform: translateY(50px);
+            opacity: 0;
+        }
+
+        /* Parallax Section */
+        .parallax-section {
+            height: 500px;
+            background: linear-gradient(135deg, #111111, #333333);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .parallax-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .parallax-item {
+            position: absolute;
+            border-radius: 50%;
+        }
+
+        .parallax-text {
+            font-size: 5rem;
+            font-weight: 800;
+            color: white;
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        /* Contact Section */
+        .contact {
+            padding: 150px 0;
+            background-color: #131313;
+        }
+
+        .contact-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            opacity: 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 15px;
+            background-color: #1a1a1a;
+            border: 2px solid #333333;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            transition: border 0.3s ease;
+        }
+
+        input:focus, textarea:focus {
+            border-color: #ff6b6b;
+            outline: none;
+        }
+
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #0a0a0a;
+            padding: 80px 0 30px;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #ff6b6b;
+        }
+
+        .copyright {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+        }
+
+        /* Media Queries */
+        @media (max-width: 992px) {
+            h1 {
+                font-size: 4rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 3rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+    .page-loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #0f0f0f;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    }
+
+    .loader-content {
+        text-align: center;
+    }
+
+    .loader-spinner {
+        width: 60px;
+        height: 60px;
+        border: 5px solid rgba(255, 107, 107, 0.3);
+        border-radius: 50%;
+        border-top-color: #ff6b6b;
+        margin: 0 auto 20px;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .loader-progress {
+        width: 300px;
+        height: 5px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 5px;
+        margin-top: 20px;
+        overflow: hidden;
+        display: flex;
+        position: relative;
+        margin-left: 90px;
+    }
+
+    .loader-bar {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #ff6b6b, #ff8e53);
+        border-radius: 5px;
+    }
+
+        /* Stats Section */
+    .stats-section {
+        background: linear-gradient(135deg, #131313, #1f1f1f);
+        padding: 100px 0;
+    }
+
+    .stats-container {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .stat-item {
+        flex: 1;
+        min-width: 200px;
+        text-align: center;
+        padding: 20px;
+    }
+
+    .counter {
+        font-size: 3.5rem;
+        font-weight: 800;
+        color: #ff6b6b;
+        margin-bottom: 10px;
+    }
+
+    .counter:after {
+        content: "+";
+        font-size: 2.5rem;
+        margin-left: 5px;
+    }
+
+    .stat-item:nth-child(3) .counter:after {
+        content: "%";
+    }
+
+    .stat-title {
+        font-size: 1.2rem;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    /* Testimonial Slider */
+    .testimonial-section {
+        padding: 150px 0;
+        background-color: #0f0f0f;
+    }
+
+    .testimonial-slider {
+        max-width: 800px;
+        margin: 0 auto;
+        position: relative;
+    }
+
+    .slides-container {
+        position: relative;
+        height: 300px;
+        overflow: hidden;
+    }
+
+    .slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transform: translateX(50px);
+        transition: all 0.5s ease;
+        padding: 40px;
+        background-color: #1a1a1a;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+    }
+
+    .slide.active {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .testimonial-content {
+        text-align: center;
+    }
+
+    .quote {
+        font-size: 1.3rem;
+        font-style: italic;
+        margin-bottom: 30px;
+        line-height: 1.6;
+    }
+
+    .client-name {
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+
+    .client-position {
+        font-size: 1rem;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .slider-controls {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 30px;
+    }
+
+    .prev-btn, .next-btn {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .prev-btn:hover, .next-btn:hover {
+        color: #ff6b6b;
+    }
+
+    .slider-dots {
+        display: flex;
+        justify-content: center;
+        margin: 0 20px;
+    }
+
+    .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.3);
+        margin: 0 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .dot.active {
+        background-color: #ff6b6b;
+    }
+    /* Mobile Touch Optimizations */
+@media (max-width: 768px) {
+    button, a, .feature-card, input, textarea {
+        /* Larger touch targets for mobile */
+        min-height: 44px;
+    }
+    
+    .nav-container {
+        position: relative;
+    }
+    
+    .mobile-menu-btn {
+        display: block;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+    }
+    
+    .nav-links {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        flex-direction: column;
+        background-color: rgba(15, 15, 15, 0.95);
+        padding: 20px;
+        border-radius: 0 0 10px 10px;
+        transform: translateY(-20px);
+        opacity: 0;
+        pointer-events: none;
+        transition: all 0.3s ease;
+    }
+    
+    .nav-links.active {
+        transform: translateY(0);
+        opacity: 1;
+        pointer-events: all;
+    }
+    
+    .nav-links li {
+        margin: 15px 0;
+    }
+    
+    /* Touch-friendly slider controls */
+    .prev-btn, .next-btn {
+        padding: 15px;
+        font-size: 2rem;
+    }
+    
+    .dot {
+        width: 15px;
+        height: 15px;
+        margin: 0 8px;
+    }
+}
+
+/* Touch active state */
+.touch-active {
+    transform: scale(0.95);
+    background: linear-gradient(90deg, #ff8e53, #ff6b6b);
+}
+    </style>
+</head>
+<body>
+    <div class="page-loader">
+        <div class="loader-content">
+            <div class="loader-spinner"></div>
+            <h2>Loading Experience</h2>
+            <div class="loader-progress">
+                <div class="loader-bar"></div>
+            </div>
+        </div>
+    </div>
+    <!-- Custom Cursor -->
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="#" class="logo">Creative<span>Studio</span></a>
+            <button class="mobile-menu-btn">☰</button>           
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#showcase">Showcase</a></li>
+                <li><a href="#parallax">Experience</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="container hero-content">
+            <h1>Create stunning digital experiences</h1>
+            <p>Transform your ideas into reality with creative animations and smooth transitions.</p>
+            <button>Get Started</button>
+        </div>
+        <div class="hero-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>Amazing Features</h2>
+                <p>Everything you need to create eye-catching experiences</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3 class="feature-title">Responsive Design</h3>
+                    <p class="feature-desc">Perfect display on any device, from mobile to desktop.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🚀</div>
+                    <h3 class="feature-title">Fast Performance</h3>
+                    <p class="feature-desc">Optimized code for lightning-fast loading speeds.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">✨</div>
+                    <h3 class="feature-title">Smooth Animations</h3>
+                    <p class="feature-desc">Fluid transitions and effects for a better user experience.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3 class="feature-title">Secure & Reliable</h3>
+                    <p class="feature-desc">Built with best practices for maximum security.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3 class="feature-title">SEO Optimized</h3>
+                    <p class="feature-desc">Rank higher in search engines with optimized code.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3 class="feature-title">Regular Updates</h3>
+                    <p class="feature-desc">Stay current with continuous improvements.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats-section" id="stats">
+        <div class="container">
+            <div class="stats-container">
+                <div class="stat-item">
+                    <div class="counter" data-target="3500">0</div>
+                    <div class="stat-title">Completed Projects</div>
+                </div>
+                <div class="stat-item">
+                    <div class="counter" data-target="150">0</div>
+                    <div class="stat-title">Global Clients</div>
+                </div>
+                <div class="stat-item">
+                    <div class="counter" data-target="95">0</div>
+                    <div class="stat-title">Satisfaction Rate</div>
+                </div>
+                <div class="stat-item">
+                    <div class="counter" data-target="27">0</div>
+                    <div class="stat-title">Industry Awards</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Testimonial Slider -->
+    <section class="testimonial-section" id="testimonials">
+        <div class="container">
+            <div class="section-title">
+                <h2>Client Testimonials</h2>
+                <p>What our clients say about us</p>
+            </div>
+            <div class="testimonial-slider">
+                <div class="slides-container">
+                    <div class="slide active">
+                        <div class="testimonial-content">
+                            <div class="quote">"Their creative approach transformed our brand completely. The animated landing page increased our conversions by 150%."</div>
+                            <div class="client-info">
+                                <div class="client-name">John Smith</div>
+                                <div class="client-position">CEO, TechGrowth</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slide">
+                        <div class="testimonial-content">
+                            <div class="quote">"The interactive elements really made our product stand out. We've seen a significant increase in user engagement."</div>
+                            <div class="client-info">
+                                <div class="client-name">Sarah Johnson</div>
+                                <div class="client-position">Marketing Director, InnovateCorp</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slide">
+                        <div class="testimonial-content">
+                            <div class="quote">"Working with this team was a game-changer. Their attention to detail and creative solutions exceeded our expectations."</div>
+                            <div class="client-info">
+                                <div class="client-name">Michael Chen</div>
+                                <div class="client-position">Product Manager, NextWave</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="slider-controls">
+                    <button class="prev-btn">←</button>
+                    <div class="slider-dots">
+                        <span class="dot active" data-index="0"></span>
+                        <span class="dot" data-index="1"></span>
+                        <span class="dot" data-index="2"></span>
+                    </div>
+                    <button class="next-btn">→</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Showcase -->
+    <section class="product-showcase" id="showcase">
+        <div class="container">
+            <div class="section-title">
+                <h2>Our Latest Work</h2>
+                <p>Discover what we can create together</p>
+            </div>
+            <div class="showcase-container">
+                <div class="product-image"></div>
+                <div class="product-details">
+                    <h3>Project Showcase</h3>
+                    <p>This interactive landing page demonstrates the power of modern web animation techniques. Featuring smooth transitions, parallax effects, and creative interactions, it showcases how engaging digital experiences can be created with HTML, CSS, and JavaScript.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="threejs-section" id="threejs">
+        <div class="container">
+            <div class="section-title">
+                <h2>Interactive 3D Experience</h2>
+                <p>Explore our immersive 3D capabilities</p>
+            </div>
+            <div id="three-container"></div>
+        </div>
+    </section>
+
+    <!-- Parallax Section -->
+    <section class="parallax-section" id="parallax">
+        <div class="parallax-bg">
+            <!-- Parallax items will be added via JS -->
+        </div>
+        <h2 class="parallax-text">Immersive Experience</h2>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container contact-container">
+            <div class="section-title">
+                <h2>Get In Touch</h2>
+                <p>Have a project in mind? Let's work together</p>
+            </div>
+            <form>
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" placeholder="Your name">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="Your email">
+                </div>
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" placeholder="Tell us about your project"></textarea>
+                </div>
+                <div class="form-group">
+                    <button type="submit">Send Message</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <ul class="footer-links">
+                <li><a href="#">Home</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#showcase">Showcase</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><a href="#">Privacy Policy</a></li>
+            </ul>
+            <p class="copyright">© 2025 CreativeStudio. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize GSAP and ScrollTrigger
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Wait until DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Custom cursor
+            const cursor = document.querySelector('.cursor');
+            const cursorFollower = document.querySelector('.cursor-follower');
+            
+            document.addEventListener('mousemove', (e) => {
+                gsap.to(cursor, {
+                    x: e.clientX,
+                    y: e.clientY,
+                    duration: 0.1
+                });
+                
+                gsap.to(cursorFollower, {
+                    x: e.clientX,
+                    y: e.clientY,
+                    duration: 0.3
+                });
+            });
+            
+            // Make cursor larger on hoverable elements
+            const hoverables = document.querySelectorAll('a, button');
+            
+            hoverables.forEach(hoverable => {
+                hoverable.addEventListener('mouseenter', () => {
+                    gsap.to(cursor, {
+                        width: 40,
+                        height: 40,
+                        backgroundColor: '#ff8e53',
+                        duration: 0.3
+                    });
+                    
+                    gsap.to(cursorFollower, {
+                        width: 60,
+                        height: 60,
+                        duration: 0.3
+                    });
+                });
+                
+                hoverable.addEventListener('mouseleave', () => {
+                    gsap.to(cursor, {
+                        width: 20,
+                        height: 20,
+                        backgroundColor: '#ff6b6b',
+                        duration: 0.3
+                    });
+                    
+                    gsap.to(cursorFollower, {
+                        width: 40,
+                        height: 40,
+                        duration: 0.3
+                    });
+                });
+            });
+            
+            // Navbar scroll effect
+            window.addEventListener('scroll', function() {
+                const nav = document.querySelector('nav');
+                if (window.scrollY > 50) {
+                    nav.classList.add('scrolled');
+                } else {
+                    nav.classList.remove('scrolled');
+                }
+            });
+            
+            // Hero animations
+            const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+            
+            heroTl.fromTo('.hero h1', 
+                { y: 50, opacity: 0 }, 
+                { y: 0, opacity: 1, duration: 1 }
+            )
+            .fromTo('.hero p', 
+                { y: 50, opacity: 0 }, 
+                { y: 0, opacity: 1, duration: 1 }, 
+                '-=0.5'
+            )
+            .fromTo('.hero button', 
+                { y: 50, opacity: 0 }, 
+                { y: 0, opacity: 1, duration: 1 }, 
+                '-=0.5'
+            )
+            .fromTo('.shape', 
+                { scale: 0, opacity: 0 }, 
+                { scale: 1, opacity: 0.2, duration: 1, stagger: 0.2 }, 
+                '-=1'
+            );
+            
+            // Animate shapes continuously
+            gsap.to('.shape-1', {
+                x: "30%",
+                y: "20%",
+                rotation: 360,
+                duration: 15,
+                ease: "none",
+                repeat: -1,
+                yoyo: true
+            });
+            
+            gsap.to('.shape-2', {
+                x: "-20%",
+                y: "-30%",
+                rotation: -360,
+                duration: 20,
+                ease: "none",
+                repeat: -1,
+                yoyo: true
+            });
+            
+            gsap.to('.shape-3', {
+                x: "25%",
+                y: "-15%",
+                rotation: 360,
+                duration: 25,
+                ease: "none",
+                repeat: -1,
+                yoyo: true
+            });
+            
+            // Features section animations
+            gsap.fromTo('.section-title', 
+                { y: 50, opacity: 0 },
+                { 
+                    y: 0, 
+                    opacity: 1, 
+                    duration: 1,
+                    scrollTrigger: {
+                        trigger: '.section-title',
+                        start: 'top 80%'
+                    }
+                }
+            );
+            
+            gsap.to('.feature-card', {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                stagger: 0.2,
+                scrollTrigger: {
+                    trigger: '.features-grid',
+                    start: 'top 80%'
+                }
+            });
+            
+            // Product showcase animations
+            gsap.to('.product-image', {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                scrollTrigger: {
+                    trigger: '.product-image',
+                    start: 'top 80%'
+                }
+            });
+            
+            gsap.to('.product-details', {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                scrollTrigger: {
+                    trigger: '.product-details',
+                    start: 'top 80%'
+                }
+            });
+            
+            // Create parallax items
+            const parallaxBg = document.querySelector('.parallax-bg');
+            
+            // Create 20 parallax items with random properties
+            for (let i = 0; i < 20; i++) {
+                const size = Math.random() * 100 + 20;
+                const item = document.createElement('div');
+                item.classList.add('parallax-item');
+                item.style.width = `${size}px`;
+                item.style.height = `${size}px`;
+                item.style.background = `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.random() * 0.3 + 0.1})`;
+                item.style.left = `${Math.random() * 100}%`;
+                item.style.top = `${Math.random() * 100}%`;
+                parallaxBg.appendChild(item);
+            }
+            
+            // Parallax effect
+            const parallaxItems = document.querySelectorAll('.parallax-item');
+            
+            parallaxItems.forEach((item, index) => {
+                const depth = Math.random() * 0.5 + 0.1;
+                
+                gsap.fromTo(item, 
+                    { y: 200, opacity: 0 },
+                    { 
+                        y: 0, 
+                        opacity: 1, 
+                        duration: 1,
+                        delay: index * 0.05,
+                        scrollTrigger: {
+                            trigger: '.parallax-section',
+                            start: 'top 80%'
+                        }
+                    }
+                );
+                
+                ScrollTrigger.create({
+                    trigger: '.parallax-section',
+                    start: 'top bottom',
+                    end: 'bottom top',
+                    onUpdate: (self) => {
+                        const yPos = -(self.progress * 100 * depth);
+                        gsap.set(item, { y: yPos });
+                    }
+                });
+            });
+            
+            // Parallax text
+            gsap.fromTo('.parallax-text', 
+                { y: 100, opacity: 0 },
+                { 
+                    y: 0, 
+                    opacity: 1, 
+                    duration: 1,
+                    scrollTrigger: {
+                        trigger: '.parallax-section',
+                        start: 'top 80%'
+                    }
+                }
+            );
+            
+            // Contact form animations
+            gsap.to('.form-group', {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                stagger: 0.2,
+                scrollTrigger: {
+                    trigger: '.contact-container',
+                    start: 'top 80%'
+                }
+            });
+            
+            // Form interaction animations
+            const formInputs = document.querySelectorAll('input, textarea');
+            
+            formInputs.forEach(input => {
+                input.addEventListener('focus', () => {
+                    gsap.to(input, {
+                        borderColor: '#ff6b6b',
+                        duration: 0.3
+                    });
+                });
+                
+                input.addEventListener('blur', () => {
+                    if (!input.value) {
+                        gsap.to(input, {
+                            borderColor: '#333333',
+                            duration: 0.3
+                        });
+                    }
+                });
+            });
+            
+            // Initialize form elements to have transform
+            gsap.set('.form-group', {
+                y: 50,
+                opacity: 0
+            });
+        });
+
+        // Three.js Implementation
+        function initThree() {
+            const container = document.getElementById('three-container');
+
+            // Create scene, camera and renderer
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            container.appendChild(renderer.domElement);
+
+            // Add responsive behavior
+            window.addEventListener('resize', () => {
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            });
+
+            // Create geometry - multiple cubes
+            const cubes = [];
+            for (let i = 0; i < 50; i++) {
+                const geometry = new THREE.BoxGeometry(1, 1, 1);
+                const material = new THREE.MeshNormalMaterial();
+                const cube = new THREE.Mesh(geometry, material);
+
+                // Random position
+                cube.position.x = (Math.random() - 0.5) * 20;
+                cube.position.y = (Math.random() - 0.5) * 20;
+                cube.position.z = (Math.random() - 0.5) * 20 - 10;
+
+                scene.add(cube);
+                cubes.push({
+                    mesh: cube,
+                    rotX: Math.random() * 0.05,
+                    rotY: Math.random() * 0.05
+                });
+            }
+
+            // Camera position
+            camera.position.z = 15;
+
+            // Mouse interaction
+            let mouseX = 0;
+            let mouseY = 0;
+
+            container.addEventListener('mousemove', (e) => {
+                const rect = container.getBoundingClientRect();
+                mouseX = ((e.clientX - rect.left) / container.clientWidth) * 2 - 1;
+                mouseY = -((e.clientY - rect.top) / container.clientHeight) * 2 + 1;
+            });
+
+            // Animation loop
+            function animate() {
+                requestAnimationFrame(animate);
+
+                // Slowly rotate camera based on mouse position
+                camera.position.x += (mouseX * 5 - camera.position.x) * 0.05;
+                camera.position.y += (mouseY * 5 - camera.position.y) * 0.05;
+                camera.lookAt(scene.position);
+
+                // Rotate cubes
+                cubes.forEach(cube => {
+                    cube.mesh.rotation.x += cube.rotX;
+                    cube.mesh.rotation.y += cube.rotY;
+                });
+
+                renderer.render(scene, camera);
+            }
+
+            animate();
+
+            // Add ScrollTrigger for entrance animation
+            ScrollTrigger.create({
+                trigger: '.threejs-section',
+                start: 'top 80%',
+                onEnter: () => {
+                    gsap.from(cubes.map(cube => cube.mesh.position), {
+                        x: 0,
+                        y: 0, 
+                        z: -50,
+                        duration: 2,
+                        stagger: 0.01,
+                        ease: "back.out(1.7)"
+                    });
+                }
+            });
+        }
+
+        // Call the function after DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Existing code...
+
+            // Initialize Three.js scene
+            initThree();
+        });
+
+        // Loading animation
+        window.addEventListener('load', () => {
+            const loader = document.querySelector('.page-loader');
+            const loaderBar = document.querySelector('.loader-bar');
+
+            // Simulate loading progress
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 5;
+                loaderBar.style.width = `${progress}%`;
+
+                if (progress >= 100) {
+                    clearInterval(interval);
+
+                    // Animate loader out
+                    gsap.to(loader, {
+                        opacity: 0,
+                        duration: 0.5,
+                        onComplete: () => {
+                            loader.style.display = 'none';
+
+                            // Start the page animations after loader is gone
+                            initPageAnimations();
+                        }
+                    });
+                }
+            }, 100);
+        });
+
+        // Move your existing animation code into this function
+        function initPageAnimations() {
+            // Existing animation code...
+        }
+
+        // Counter animation
+    function initCounters() {
+        const counters = document.querySelectorAll('.counter');
+
+        counters.forEach(counter => {
+            const target = parseInt(counter.getAttribute('data-target'));
+            const duration = 2; // seconds
+            const steps = 60; // updates per second
+            const increment = target / (duration * steps);
+            let current = 0;
+
+            const updateCounter = () => {
+                current += increment;
+                if (current < target) {
+                    counter.textContent = Math.floor(current);
+                    setTimeout(updateCounter, 1000/steps);
+                } else {
+                    counter.textContent = target;
+                }
+            };
+
+            // Create scroll trigger for each counter
+            ScrollTrigger.create({
+                trigger: counter,
+                start: 'top 80%',
+                onEnter: updateCounter
+            });
+        });
+    }
+
+    // Testimonial slider functionality
+    function initTestimonialSlider() {
+        const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.dot');
+        const prevBtn = document.querySelector('.prev-btn');
+        const nextBtn = document.querySelector('.next-btn');
+
+        let currentSlide = 0;
+
+        // Set first slide as active initially
+        slides[0].classList.add('active');
+        dots[0].classList.add('active');
+
+        // Function to change slides
+        function goToSlide(index) {
+            // Remove active class from current slide and dot
+            slides[currentSlide].classList.remove('active');
+            dots[currentSlide].classList.remove('active');
+
+            // Set new slide and dot as active
+            currentSlide = index;
+            if (currentSlide < 0) currentSlide = slides.length - 1;
+            if (currentSlide >= slides.length) currentSlide = 0;
+
+            slides[currentSlide].classList.add('active');
+            dots[currentSlide].classList.add('active');
+        }
+
+        // Event listeners for controls
+        prevBtn.addEventListener('click', () => goToSlide(currentSlide - 1));
+        nextBtn.addEventListener('click', () => goToSlide(currentSlide + 1));
+
+        // Dots click event
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', () => goToSlide(index));
+        });
+
+        // Auto-advance slides every 5 seconds
+        setInterval(() => {
+            goToSlide(currentSlide + 1);
+        }, 5000);
+    }
+
+    // Add these function calls to your initPageAnimations function
+    function initPageAnimations() {
+        // Existing animation code...
+
+        // Initialize counters and slider
+        initCounters();
+        initTestimonialSlider();
+    }
+
+    // Mobile touch optimizations
+    function initMobileOptimizations() {
+        // Mobile menu toggle
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+        
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+            });
+            
+            // Close menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.nav-container')) {
+                    navLinks.classList.remove('active');
+                }
+            });
+        }
+        
+        // Add touch events for three.js section
+        const threeContainer = document.getElementById('three-container');
+        if (threeContainer) {
+            let touchStartX = 0;
+            let touchStartY = 0;
+            
+            threeContainer.addEventListener('touchstart', (e) => {
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+            });
+            
+            threeContainer.addEventListener('touchmove', (e) => {
+                if (!touchStartX || !touchStartY) return;
+                
+                const touchX = e.touches[0].clientX;
+                const touchY = e.touches[0].clientY;
+                
+                const rect = threeContainer.getBoundingClientRect();
+                mouseX = ((touchX - rect.left) / threeContainer.clientWidth) * 2 - 1;
+                mouseY = -((touchY - rect.top) / threeContainer.clientHeight) * 2 + 1;
+                
+                // Prevent page scrolling while interacting with 3D
+                e.preventDefault();
+            });
+        }
+        
+        // Use touch-friendly animations and interactions
+        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        
+        if (isTouchDevice) {
+            // Disable or simplify cursor animations for touch devices
+            const cursor = document.querySelector('.cursor');
+            const cursorFollower = document.querySelector('.cursor-follower');
+            
+            if (cursor && cursorFollower) {
+                cursor.style.display = 'none';
+                cursorFollower.style.display = 'none';
+            }
+            
+            // Add active states for buttons that work well with touch
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(button => {
+                button.addEventListener('touchstart', () => {
+                    button.classList.add('touch-active');
+                });
+                
+                button.addEventListener('touchend', () => {
+                    button.classList.remove('touch-active');
+                    setTimeout(() => button.classList.remove('touch-active'), 300);
+                });
+            });
+        }
+    }
+    
+    // Add function call to your initialization
+    function initPageAnimations() {
+        // Existing animation code...
+        
+        initMobileOptimizations();
+    }
+       </script>
+</body>
+</html>
